@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Model files and data
+*.bin
+*.pt
+*.pth
+*.onnx
+*.safetensors
+models/
+embeddings/
+
+# Vector database files
+*.faiss
+*.hnsw
+*.ann
+chroma_db/
+
+# Documentation and data files
+*.pdf
+data/
+docs/
+*.csv
+*.json
+*.jsonl
+*.txt
+
+# Logs and temporary files
+logs/
+*.log
+tmp/
+temp/
+.cache/
+
+# Cosmos DB local emulator
+CosmosDBEmulatorConfig/
+
+# Azure configuration
+local.settings.json
+.azure/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
