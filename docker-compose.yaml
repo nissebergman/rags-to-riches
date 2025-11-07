@@ -2,54 +2,26 @@ version: "3.8"
 
 services:
   ollama:
-    image: ollama/ollama:latest
+    build:
+      context: .
+      dockerfile: ollama-custom.Dockerfile
     container_name: ollama
     volumes:
       - ollama_data:/root/.ollama
     ports:
       - "11434:11434"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            # - driver: nvidia
-            #   count: all
-            #   capabilities: [gpu]
-            - driver: intel
-              count: all
-              capabilities: [gpu]
-            # - driver: amd
-            #   count: all
-            #   capabilities: [gpu]
 
   chatpdf:
     build: .
     container_name: chatpdf
     environment:
       - OLLAMA_HOST=http://ollama:11434
-      - PYTORCH_ENABLE_INTEL_GPU=1
-      # - NVIDIA_VISIBLE_DEVICES=all
-      - HSA_OVERRIDE_GFX_VERSION=10.3.0
-      # - ROCM_PATH=/opt/rocm
     ports:
       - "8501:8501"
     depends_on:
       - ollama
     volumes:
       - ./chroma_db:/app/chroma_db
-    deploy:
-      resources:
-        reservations:
-          devices:
-            # - driver: nvidia
-            #   count: all
-            #   capabilities: [gpu]
-            - driver: intel
-              count: all
-              capabilities: [gpu]
-            # - driver: amd
-            #   count: all
-            #   capabilities: [gpu]
 
 volumes:
   ollama_data:

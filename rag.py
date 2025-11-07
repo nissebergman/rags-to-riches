@@ -8,26 +8,13 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema.runnable import RunnablePassthrough
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_core.prompts import ChatPromptTemplate
-import torch
 import logging
-try:
-    import intel_extension_for_pytorch as ipex
-    INTEL_GPU_AVAILABLE = True
-except ImportError:
-    INTEL_GPU_AVAILABLE = False
-
-try:
-    import torch_rocm
-    AMD_GPU_AVAILABLE = True
-except ImportError:
-    AMD_GPU_AVAILABLE = False
 
 set_debug(True)
 set_verbose(True)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class ChatPDF:
     """A class for handling PDF ingestion and question answering using RAG."""
@@ -37,16 +24,12 @@ class ChatPDF:
         Initialize the ChatPDF instance with an LLM and embedding model.
         """
         # GPU detection and setup
-        self.device = self._setup_device()
-        model_kwargs = self._get_model_kwargs()
 
         self.model = ChatOllama(
-            model=llm_model,
-            **model_kwargs
+            model=llm_model
         )
         self.embeddings = OllamaEmbeddings(
-            model=embedding_model,
-            **model_kwargs
+            model=embedding_model
         )
 
         self.model = ChatOllama(model=llm_model)
@@ -66,47 +49,6 @@ class ChatPDF:
         )
         self.vector_store = None
         self.retriever = None
-
-    def _setup_device(self):
-        """Setup the appropriate device based on availability."""
-        if torch.cuda.is_available():
-            if 'AMD' in torch.cuda.get_device_name(0):
-                logger.info("AMD GPU detected (ROCm)")
-                return torch.device("cuda")
-            else:
-                logger.info("NVIDIA GPU detected")
-                return torch.device("cuda")
-        elif INTEL_GPU_AVAILABLE and torch.xpu.is_available():
-            logger.info("Intel GPU detected")
-            ipex.enable_onednn_fusion(True)
-            return torch.device("xpu")
-        else:
-            logger.info("No GPU detected, using CPU")
-            return torch.device("cpu")
-
-    def _get_model_kwargs(self):
-        """Get model configuration based on available hardware."""
-        kwargs = {"device": str(self.device)}
-        
-        if str(self.device) == "xpu":
-            kwargs.update({
-                "use_intel_gpu": True,
-                "use_ipex": True
-            })
-        elif str(self.device) == "cuda":
-            if 'AMD' in torch.cuda.get_device_name(0):
-                kwargs.update({
-                    "n_gpu_layers": -1,
-                    "compute_dtype": "float32",  # AMD typically performs better with float32
-                    "rocm_enabled": True
-                })
-            else:
-                kwargs.update({
-                    "n_gpu_layers": -1,
-                    "compute_dtype": "float16"
-                })
-            
-        return kwargs
 
     def ingest(self, pdf_file_path: str):
         """
