@@ -12,15 +12,15 @@ services:
       resources:
         reservations:
           devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+            # - driver: nvidia
+            #   count: all
+            #   capabilities: [gpu]
             - driver: intel
               count: all
               capabilities: [gpu]
-            - driver: amd
-              count: all
-              capabilities: [gpu]
+            # - driver: amd
+            #   count: all
+            #   capabilities: [gpu]
 
   chatpdf:
     build: .
@@ -28,9 +28,9 @@ services:
     environment:
       - OLLAMA_HOST=http://ollama:11434
       - PYTORCH_ENABLE_INTEL_GPU=1
-      - NVIDIA_VISIBLE_DEVICES=all
+      # - NVIDIA_VISIBLE_DEVICES=all
       - HSA_OVERRIDE_GFX_VERSION=10.3.0
-      - ROCM_PATH=/opt/rocm
+      # - ROCM_PATH=/opt/rocm
     ports:
       - "8501:8501"
     depends_on:
@@ -41,15 +41,15 @@ services:
       resources:
         reservations:
           devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+            # - driver: nvidia
+            #   count: all
+            #   capabilities: [gpu]
             - driver: intel
               count: all
               capabilities: [gpu]
-            - driver: amd
-              count: all
-              capabilities: [gpu]
+            # - driver: amd
+            #   count: all
+            #   capabilities: [gpu]
 
 volumes:
   ollama_data:
