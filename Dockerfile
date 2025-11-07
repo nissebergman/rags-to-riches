@@ -8,7 +8,7 @@ FROM intel/oneapi-basekit:latest as intel_base
 # Install AMD support
 # FROM rocm/dev-ubuntu-22.04 as amd_base
 
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
