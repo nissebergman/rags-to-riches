@@ -12,10 +12,21 @@ FROM python:3.10-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    libomp-dev \
+    libjpeg-dev \
+    libpng-dev \
+    build-essential \
     curl \
     wget \
     git \
     && rm -rf /var/lib/apt/lists/*
+
+# Install PyTorch (CPU)
+RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Install Intel Extension for PyTorch
+RUN pip install intel-extension-for-pytorch -f https://developer.intel.com/ipex-whl-stable
+
 
 # Copy GPU runtime dependencies from base images
 # COPY --from=nvidia_base /usr/local/cuda/lib64 /usr/local/cuda/lib64
@@ -36,7 +47,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip --default-timeout=1000 install --no-cache-dir -r requirements.txt
+
 
 # Copy the application code
 COPY . .

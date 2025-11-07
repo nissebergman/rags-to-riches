@@ -8,10 +8,5 @@ pypdf
 chromadb
 cryptography
 # GPU Support
-intel-extension-for-pytorch
 neural-compressor
 openvino
-torch
-cuda-python
-torch-rocm
-rocm-smi
